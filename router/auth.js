@@ -36,13 +36,18 @@ router.post("/register", async (req, res) => {
 router.post("/signin", async (req, res) => {
   let { email, password } = req.body;
   console.log(email, password);
-  const checkEmail = await User.findOne({ email: email });
-  const checkPass = await bcryptjs.compare(password, checkEmail.password);
-  console.log(email, password);
-  if (checkPass && checkEmail) {
-    res.status(200).json({ meassage: "Sigin Success" });
+  if (!email || !password) {
+    res.status(200).json({ meassage: "Please Filled The Data" });
   } else {
-    res.status(200).json({ meassage: "Invalid Credentials" });
+    const checkEmail = await User.findOne({ email: email });
+    if (checkEmail) {
+      const checkPass = await bcryptjs.compare(password, checkEmail.password);
+      if (checkPass) {
+        res.status(200).json({ meassage: "Sigin Success" });
+      }
+    } else {
+      res.status(200).json({ meassage: "Invalid Credentials" });
+    }
   }
 });
 
