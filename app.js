@@ -1,42 +1,42 @@
-const dotenv = require('dotenv')
-const express = require('express');
+const dotenv = require("dotenv");
+const express = require("express");
 const app = express();
 
-dotenv.config({ path: './config.env' })
+dotenv.config({ path: "./config.env" });
 const PORT = process.env.PORT;
 
-require('./DB/connection')
+require("./DB/connection");
 // const USer = require('./model/userSchema');
 
-app.use(express.json());  // Json data will be converted to object 
+app.use(express.json()); // Json data will be converted to object
 
-
-app.use(require('./router/auth'));//Link the router file
-
+app.use(require("./router/auth")); //Link the router file
 
 const middleware = (req, res, next) => {
-    next();
-}
+  next();
+};
 
 // middleware();
 
-
-app.get('/', (req, res) => {
-    res.send(`Hello World From The Server`);
+app.get("/", (req, res) => {
+  res.send(`Hello World From The Server`);
 });
-app.get('/about', middleware, (req, res) => {
-    res.send(`Hello World From The About`);
+app.get("/about", middleware, (req, res) => {
+  res.send(`Hello World From The About`);
 });
-app.get('/contact', (req, res) => {
-    res.send(`Hello World From The Contact`);
+app.get("/contact", (req, res) => {
+  res.send(`Hello World From The Contact`);
 });
-app.get('/signin', (req, res) => {
-    res.send(`Hello World From The SignIn`);
+app.get("/signin", (req, res) => {
+  res.cookie("jwt", "token", {
+    expires: new Date(Date.now() + 60000),
+    httpOnly: true,
+  });
+  res.send(`Hello World From The SignIn`);
 });
-app.get('/signup', (req, res) => {
-    res.send(`Hello World From The SignUp`);
+app.get("/signup", (req, res) => {
+  res.send(`Hello World From The SignUp`);
 });
 console.log("All Fine");
-
 
 app.listen(PORT);

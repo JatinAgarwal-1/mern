@@ -36,11 +36,19 @@ router.post("/register", async (req, res) => {
 router.post("/signin", async (req, res) => {
   let { email, password } = req.body;
   console.log(email, password);
+
   if (!email || !password) {
     res.status(200).json({ meassage: "Please Filled The Data" });
   } else {
     const checkEmail = await User.findOne({ email: email });
     if (checkEmail) {
+      let token = await checkEmail.generateAuthToken();
+      console.log(token);
+      res.cookie("jwt", token, {
+        expires: new Date(Date.now() + 60000),
+        httpOnly: true,
+      });
+
       const checkPass = await bcryptjs.compare(password, checkEmail.password);
       if (checkPass) {
         res.status(200).json({ meassage: "Sigin Success" });
